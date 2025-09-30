@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Visitantes - Igreja</title>
+    <title>Sistema de Visitantes </title>
     <style>
         * {
             margin: 0;
@@ -27,6 +27,12 @@
             overflow: hidden;
         }
 
+        /* Container maior para telas de cadastro e visitantes */
+        .container.wide {
+            max-width: 95%;
+            margin: 0 auto;
+        }
+
         .header {
             background: linear-gradient(135deg, #4a90e2, #357abd);
             color: white;
@@ -48,8 +54,13 @@
             padding: 30px;
         }
 
-        /* Tela Inicial */
+        /* Tela Inicial - TOTALMENTE CENTRALIZADA */
         .home-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh; /* Aumentado para ocupar mais altura */
             text-align: center;
         }
 
@@ -57,7 +68,8 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            margin-top: 30px;
+            width: 100%;
+            max-width: 400px;
         }
 
         .home-btn {
@@ -79,9 +91,82 @@
         .home-btn:hover {
             transform: translateY(-2px);
         }
+        
 
         .home-btn.secondary {
             background: linear-gradient(135deg, #28a745, #20c997);
+        }
+        .home-btn.config {
+            background: linear-gradient(135deg, #636964, #5c6462);
+        }
+
+        /* Controle de tamanho de fonte */
+        .font-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+        }
+
+        .font-btn {
+            background: #4a90e2;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .font-btn:hover {
+            background: #357abd;
+            transform: scale(1.05);
+        }
+
+        .font-info {
+            font-size: 14px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        /* Classes de tamanho de fonte */
+        .font-small {
+            --base-font: 16px;
+            --title-font: 20px;
+            --name-font: 24px;
+            --details-font: 18px;
+            --badge-font: 14px;
+        }
+
+        .font-medium {
+            --base-font: 18px;
+            --title-font: 22px;
+            --name-font: 28px;
+            --details-font: 20px;
+            --badge-font: 16px;
+        }
+
+        .font-large {
+            --base-font: 24px;
+            --title-font: 28px;
+            --name-font: 36px;
+            --details-font: 26px;
+            --badge-font: 22px;
+        }
+
+        .font-xlarge {
+            --base-font: 30px;
+            --title-font: 34px;
+            --name-font: 42px;
+            --details-font: 32px;
+            --badge-font: 28px;
         }
 
         /* Formulário */
@@ -94,6 +179,7 @@
             margin-bottom: 8px;
             font-weight: 600;
             color: #333;
+            font-size: var(--base-font, 16px);
         }
 
         .input-row {
@@ -108,7 +194,7 @@
             padding: 12px 15px;
             border: 2px solid #e1e5e9;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: var(--base-font, 16px);
             transition: border-color 0.3s;
         }
 
@@ -128,7 +214,7 @@
             padding: 8px 12px;
             border: 2px solid #e1e5e9;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: var(--base-font, 14px);
             background: white;
             cursor: pointer;
         }
@@ -137,7 +223,6 @@
             outline: none;
             border-color: #4a90e2;
         }
-
         .add-buttons {
             display: flex;
             gap: 10px;
@@ -152,7 +237,7 @@
             padding: 10px 15px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: var(--base-font, 14px);
             font-weight: 600;
             transition: all 0.3s;
         }
@@ -160,6 +245,11 @@
         .add-btn:hover {
             background: #4a90e2;
             color: white;
+        }
+
+        .add-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .family-section {
@@ -172,7 +262,7 @@
         .family-section h3 {
             color: #333;
             margin-bottom: 15px;
-            font-size: 18px;
+            font-size: var(--title-font, 18px);
         }
 
         .family-member {
@@ -228,38 +318,44 @@
             transform: translateY(-2px);
         }
 
+        /* CARDS MAIORES PARA MELHOR LEGIBILIDADE */
         .visitors-list {
             margin-top: 30px;
         }
 
         .visitor-card {
             background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
         }
 
         .visitor-name {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: var(--name-font, 24px);
+            font-weight: 700;
             color: #333;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            line-height: 1.3;
         }
 
         .visitor-details {
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 5px;
+            font-size: var(--details-font, 18px);
+            color: #555;
+            margin-bottom: 12px;
+            line-height: 1.4;
         }
 
         .role-badge {
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-left: 10px;
-            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: var(--badge-font, 14px);
+            margin-left: 12px;
+            font-weight: 700;
         }
 
+        .role-visitante { background: #646363; color: white; }
         .role-pastor { background: #dc3545; color: white; }
         .role-presbitero { background: #fd7e14; color: white; }
         .role-missionaria { background: #6f42c1; color: white; }
@@ -271,32 +367,99 @@
             display: none;
         }
 
-        .clear-btn {
+        /* Tela de Configurações */
+        .config-screen {
+            text-align: center;
+        }
+
+        .password-form {
+            margin: 30px 0;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .password-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+
+        .config-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .config-btn {
             background: #dc3545;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 15px 20px;
             border-radius: 8px;
             cursor: pointer;
-            margin-top: 20px;
-            font-size: 14px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+
+        .config-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .config-btn.edit {
+            background: #28a745;
+        }
+        .footer {
+        position: fixed;
+        bottom: 10px;
+        right: 15px;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 10px;
+        font-weight: 400;
+        z-index: 999;
+        opacity: 0.7;
+    }
+
+        /* Responsividade melhorada */
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                max-width: calc(100% - 20px);
+            }
+            
+            .container.wide {
+                max-width: calc(100% - 20px);
+            }
+            
+            .visitor-card {
+                padding: 25px 20px;
+            }
+            
+            .font-controls {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="container">
+    <div id="mainContainer" class="container">
         <div class="header">
             <h1>🏛️ Sistema de Visitantes</h1>
-            <p>Igreja - Controle de Visitantes v:1.0</p>
         </div>
 
         <!-- Tela Inicial -->
         <div id="homeScreen" class="content">
             <div class="home-screen">
-                <h2>Bem-vindo ao Sistema</h2>
-                <p style="margin: 20px 0; color: #666;">Escolha uma das opções abaixo:</p>
-                
                 <div class="home-buttons">
                     <button class="home-btn" onclick="showScreen('register')">
                         ➕ Cadastrar Visitante
@@ -304,12 +467,23 @@
                     <button class="home-btn secondary" onclick="showScreen('visitors')">
                         👥 Ver Visitantes Cadastrados
                     </button>
+                    <button class="home-btn config" onclick="showScreen('config')">
+                        ⚙️ Configurações
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- Tela de Cadastro -->
         <div id="registerScreen" class="content hidden">
+            <div class="font-controls">
+                <span class="font-info">Tamanho da fonte:</span>
+                <button class="font-btn" onclick="changeFontSize('small')">A-</button>
+                <button class="font-btn" onclick="changeFontSize('medium')">A</button>
+                <button class="font-btn" onclick="changeFontSize('large')">A+</button>
+                <button class="font-btn" onclick="changeFontSize('xlarge')">A++</button>
+            </div>
+            
             <form id="visitorForm">
                 <div class="form-group">
                     <label>Visitante Principal</label>
@@ -330,10 +504,10 @@
                 </div>
 
                 <div class="add-buttons">
-                    <button type="button" class="add-btn" onclick="addFamilyMember('conjugue')">+ Cônjuge</button>
+                    <button type="button" class="add-btn" id="addConjugueBtn" onclick="addFamilyMember('conjugue')">+ Cônjuge</button>
                     <button type="button" class="add-btn" onclick="addFamilyMember('filho')">+ Filho</button>
                     <button type="button" class="add-btn" onclick="addFamilyMember('pais')">+ Pais</button>
-                    <button type="button" class="add-btn" onclick="addFamilyMember('avos')">+ Avós</button>
+                                        <button type="button" class="add-btn" onclick="addFamilyMember('avos')">+ Avós</button>
                     <button type="button" class="add-btn" onclick="addFamilyMember('tios')">+ Tios</button>
                     <button type="button" class="add-btn" onclick="addFamilyMember('amigo')">+ Amigo</button>
                 </div>
@@ -347,11 +521,37 @@
 
         <!-- Tela de Visitantes -->
         <div id="visitorsScreen" class="content hidden">
+            <div class="font-controls">
+                <span class="font-info">Tamanho da fonte:</span>
+                <button class="font-btn" onclick="changeFontSize('small')">A-</button>
+                <button class="font-btn" onclick="changeFontSize('medium')">A</button>
+                <button class="font-btn" onclick="changeFontSize('large')">A+</button>
+                <button class="font-btn" onclick="changeFontSize('xlarge')">A++</button>
+            </div>
+            
             <h2>👥 Visitantes Cadastrados</h2>
             <div id="visitorsList"></div>
-            <button class="clear-btn" onclick="clearAllVisitors()">🗑️ Limpar Todos os Registros</button>
             <button type="button" class="back-btn" onclick="showScreen('home')">← Voltar</button>
         </div>
+
+        <!-- Tela de Configurações -->
+        <div id="configScreen" class="content hidden">
+            <div class="config-screen">
+                <h2>⚙️ Configurações</h2>
+                <div id="passwordForm" class="password-form">
+                    <input type="password" id="configPassword" class="password-input" placeholder="Digite a senha de acesso">
+                    <button type="button" class="save-btn" onclick="checkPassword()">🔓 Acessar</button>
+                </div>
+                <div id="configOptions" class="config-options hidden">
+                    <button class="config-btn edit" onclick="editVisitors()">✏️ Editar Visitantes</button>
+                    <button class="config-btn" onclick="clearAllVisitors()">🗑️ Excluir Todos os Registros</button>
+                </div>
+                <button type="button" class="back-btn" onclick="showScreen('home')">← Voltar</button>
+            </div>
+        </div>
+    </div>
+    <div class="footer">
+        v1.0
     </div>
 
     <script type="module">
@@ -376,6 +576,8 @@
 
         let familyMembers = [];
         let visitors = [];
+        let isAuthenticated = false;
+        const CONFIG_PASSWORD = "6161"; // Altere esta senha conforme necessário
 
         // Tornar funções globais
         window.showScreen = showScreen;
@@ -383,20 +585,65 @@
         window.removeFamilyMember = removeFamilyMember;
         window.updateFamilyMember = updateFamilyMember;
         window.clearAllVisitors = clearAllVisitors;
+        window.checkPassword = checkPassword;
+        window.editVisitors = editVisitors;
+        window.changeFontSize = changeFontSize;
 
         function showScreen(screen) {
+            const container = document.getElementById('mainContainer');
+            
             document.getElementById('homeScreen').classList.add('hidden');
             document.getElementById('registerScreen').classList.add('hidden');
             document.getElementById('visitorsScreen').classList.add('hidden');
+            document.getElementById('configScreen').classList.add('hidden');
 
             if (screen === 'home') {
                 document.getElementById('homeScreen').classList.remove('hidden');
+                container.classList.remove('wide');
             } else if (screen === 'register') {
                 document.getElementById('registerScreen').classList.remove('hidden');
+                container.classList.add('wide');
+                resetForm();
             } else if (screen === 'visitors') {
                 document.getElementById('visitorsScreen').classList.remove('hidden');
+                container.classList.add('wide');
                 loadVisitors();
+            } else if (screen === 'config') {
+                document.getElementById('configScreen').classList.remove('hidden');
+                container.classList.remove('wide');
+                resetConfigScreen();
             }
+        }
+
+        function changeFontSize(size) {
+            const container = document.getElementById('mainContainer');
+            
+            // Remove todas as classes de fonte
+            container.classList.remove('font-small', 'font-medium', 'font-large', 'font-xlarge');
+            
+            // Adiciona a nova classe
+            container.classList.add('font-' + size);
+            
+            // Salva a preferência no localStorage
+            localStorage.setItem('fontSize', size);
+        }
+
+        function loadFontPreference() {
+            const savedSize = localStorage.getItem('fontSize') || 'medium';
+            changeFontSize(savedSize);
+        }
+
+        function resetForm() {
+            familyMembers = [];
+            renderFamilyMembers();
+            updateConjugueButton();
+        }
+
+        function resetConfigScreen() {
+            document.getElementById('passwordForm').classList.remove('hidden');
+            document.getElementById('configOptions').classList.add('hidden');
+            document.getElementById('configPassword').value = '';
+            isAuthenticated = false;
         }
 
         function addFamilyMember(type) {
@@ -410,17 +657,34 @@
             
             familyMembers.push(member);
             renderFamilyMembers();
+            updateConjugueButton();
         }
 
         function removeFamilyMember(id) {
             familyMembers = familyMembers.filter(member => member.id !== id);
             renderFamilyMembers();
+            updateConjugueButton();
         }
 
         function updateFamilyMember(id, field, value) {
             const member = familyMembers.find(m => m.id === id);
             if (member) {
                 member[field] = value;
+            }
+        }
+
+        function updateConjugueButton() {
+            const conjugueBtn = document.getElementById('addConjugueBtn');
+            const hasConjugue = familyMembers.some(member => member.type === 'conjugue');
+            
+            if (hasConjugue) {
+                conjugueBtn.disabled = true;
+                conjugueBtn.style.opacity = '0.5';
+                conjugueBtn.style.cursor = 'not-allowed';
+            } else {
+                conjugueBtn.disabled = false;
+                conjugueBtn.style.opacity = '1';
+                conjugueBtn.style.cursor = 'pointer';
             }
         }
 
@@ -474,7 +738,7 @@
                                 </div>
                                 <button type="button" class="remove-btn" onclick="removeFamilyMember(${member.id})">×</button>
                             </div>
-                            <button type="button" class="add-btn" onclick="addFamilyMember('${type}')">+ Outro(a) ${typeLabel}</button>
+                            ${type !== 'conjugue' ? `<button type="button" class="add-btn" onclick="addFamilyMember('${type}')">+ Outro(a) ${typeLabel}</button>` : ''}
                         </div>
                     `;
                 });
@@ -482,6 +746,23 @@
 
             html += '</div>';
             container.innerHTML = html;
+        }
+
+        function checkPassword() {
+            const password = document.getElementById('configPassword').value;
+            
+            if (password === CONFIG_PASSWORD) {
+                document.getElementById('passwordForm').classList.add('hidden');
+                document.getElementById('configOptions').classList.remove('hidden');
+                isAuthenticated = true;
+            } else {
+                alert('Senha incorreta!');
+                document.getElementById('configPassword').value = '';
+            }
+        }
+
+        function editVisitors() {
+            alert('Funcionalidade de edição em desenvolvimento. Por enquanto, você pode excluir registros e cadastrar novamente.');
         }
 
         async function saveVisitor() {
@@ -509,6 +790,7 @@
                 document.getElementById('visitorForm').reset();
                 familyMembers = [];
                 renderFamilyMembers();
+                updateConjugueButton();
 
                 alert('Visitante cadastrado com sucesso!');
                 showScreen('home');
@@ -540,7 +822,7 @@
             const container = document.getElementById('visitorsList');
             
             if (visitors.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #666; margin: 30px 0;">Nenhum visitante cadastrado.</p>';
+                container.innerHTML = '<p style="text-align: center; color: #666; margin: 30px 0; font-size: 18px;">Nenhum visitante cadastrado.</p>';
                 return;
             }
 
@@ -594,11 +876,16 @@
                 'amigo': 'Amigo(a)',
                 'namorado': 'Namorado(a)'
             };
-            return typeLabels[type] || type;
-        }
+            return typeLabels[type] || type        }
 
         async function clearAllVisitors() {
-            if (confirm('Tem certeza que deseja limpar todos os registros de visitantes?')) {
+            // Verificar se está autenticado
+            if (!isAuthenticated) {
+                alert('❌ Acesso negado! Você precisa estar autenticado para realizar esta ação.');
+                return;
+            }
+
+            if (confirm('⚠️ ATENÇÃO: Esta ação irá excluir TODOS os registros de visitantes permanentemente.\n\nTem certeza que deseja continuar?')) {
                 try {
                     const querySnapshot = await getDocs(collection(db, "visitors"));
                     const deletePromises = [];
@@ -611,22 +898,30 @@
                     
                     visitors = [];
                     renderVisitorsList();
-                    alert('Todos os registros foram removidos.');
+                    alert('✅ Todos os registros foram removidos com sucesso.');
                 } catch (error) {
                     console.error("Erro ao limpar registros:", error);
-                    alert('Erro ao limpar registros.');
+                    alert('❌ Erro ao limpar registros. Tente novamente.');
                 }
             }
         }
 
+        // Event Listeners
         document.getElementById('visitorForm').addEventListener('submit', function(e) {
             e.preventDefault();
             saveVisitor();
         });
 
-        // Inicializar na tela home
+        // Permitir Enter na senha
+        document.getElementById('configPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        // Inicialização
+        loadFontPreference();
         showScreen('home');
     </script>
 </body>
 </html>
-
