@@ -283,6 +283,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -353,24 +354,48 @@
         </div>
     </div>
 
-    <script>
+    <script type="module">
+        // Firebase imports
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyDS9FRcKA7qKqoBKPD4NIUZG0CQ8BqvIMM",
+            authDomain: "visitantes2.firebaseapp.com",
+            projectId: "visitantes2",
+            storageBucket: "visitantes2.firebasestorage.app",
+            messagingSenderId: "555263200897",
+            appId: "1:555263200897:web:c82865db1dccb829a30780",
+            measurementId: "G-JJFNWM4EZT"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
         let familyMembers = [];
-        let visitors = JSON.parse(localStorage.getItem('churchVisitors')) || [];
+        let visitors = [];
+
+        // Tornar funções globais
+        window.showScreen = showScreen;
+        window.addFamilyMember = addFamilyMember;
+        window.removeFamilyMember = removeFamilyMember;
+        window.updateFamilyMember = updateFamilyMember;
+        window.clearAllVisitors = clearAllVisitors;
 
         function showScreen(screen) {
-            // Esconder todas as telas
             document.getElementById('homeScreen').classList.add('hidden');
             document.getElementById('registerScreen').classList.add('hidden');
             document.getElementById('visitorsScreen').classList.add('hidden');
 
-            // Mostrar tela solicitada
             if (screen === 'home') {
                 document.getElementById('homeScreen').classList.remove('hidden');
             } else if (screen === 'register') {
                 document.getElementById('registerScreen').classList.remove('hidden');
             } else if (screen === 'visitors') {
                 document.getElementById('visitorsScreen').classList.remove('hidden');
-                renderVisitorsList();
+                loadVisitors();
             }
         }
 
@@ -390,6 +415,13 @@
         function removeFamilyMember(id) {
             familyMembers = familyMembers.filter(member => member.id !== id);
             renderFamilyMembers();
+        }
+
+        function updateFamilyMember(id, field, value) {
+            const member = familyMembers.find(m => m.id === id);
+            if (member) {
+                member[field] = value;
+            }
         }
 
         function renderFamilyMembers() {
@@ -437,7 +469,7 @@
                                         <option value="presbitero" ${member.role === 'presbitero' ? 'selected' : ''}>Presbítero</option>
                                         <option value="missionaria" ${member.role === 'missionaria' ? 'selected' : ''}>Missionária</option>
                                         <option value="diacono" ${member.role === 'diacono' ? 'selected' : ''}>Diácono</option>
-                                                                                <option value="auxiliar" ${member.role === 'auxiliar' ? 'selected' : ''}>Auxiliar</option>
+                                        <option value="auxiliar" ${member.role === 'auxiliar' ? 'selected' : ''}>Auxiliar</option>
                                     </select>
                                 </div>
                                 <button type="button" class="remove-btn" onclick="removeFamilyMember(${member.id})">×</button>
@@ -452,14 +484,7 @@
             container.innerHTML = html;
         }
 
-        function updateFamilyMember(id, field, value) {
-            const member = familyMembers.find(m => m.id === id);
-            if (member) {
-                member[field] = value;
-            }
-        }
-
-        function saveVisitor() {
+        async function saveVisitor() {
             const mainName = document.getElementById('mainVisitor').value.trim();
             const mainRole = document.getElementById('mainRole').value;
 
@@ -469,24 +494,46 @@
             }
 
             const visitor = {
-                id: Date.now(),
                 mainVisitor: {
                     name: mainName,
                     role: mainRole
                 },
-                family: familyMembers.filter(member => member.name.trim() !== '')
+                family: familyMembers.filter(member => member.name.trim() !== ''),
+                timestamp: new Date()
             };
 
-            visitors.unshift(visitor);
-            localStorage.setItem('churchVisitors', JSON.stringify(visitors));
+            try {
+                await addDoc(collection(db, "visitors"), visitor);
+                
+                // Reset form
+                document.getElementById('visitorForm').reset();
+                familyMembers = [];
+                renderFamilyMembers();
 
-            // Reset form
-            document.getElementById('visitorForm').reset();
-            familyMembers = [];
-            renderFamilyMembers();
+                alert('Visitante cadastrado com sucesso!');
+                showScreen('home');
+            } catch (error) {
+                console.error("Erro ao salvar visitante:", error);
+                alert('Erro ao salvar visitante. Tente novamente.');
+            }
+        }
 
-            alert('Visitante cadastrado com sucesso!');
-            showScreen('home');
+        async function loadVisitors() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "visitors"));
+                visitors = [];
+                querySnapshot.forEach((doc) => {
+                    visitors.push({ id: doc.id, ...doc.data() });
+                });
+                
+                // Ordenar por timestamp (mais recente primeiro)
+                visitors.sort((a, b) => new Date(b.timestamp?.toDate?.() || b.timestamp) - new Date(a.timestamp?.toDate?.() || a.timestamp));
+                
+                renderVisitorsList();
+            } catch (error) {
+                console.error("Erro ao carregar visitantes:", error);
+                alert('Erro ao carregar visitantes.');
+            }
         }
 
         function renderVisitorsList() {
@@ -497,18 +544,18 @@
                 return;
             }
 
+            const roleLabels = {
+                'visitante': 'Visitante',
+                'cristao': 'Cristão',
+                'pastor': 'Pastor',
+                'presbitero': 'Presbítero',
+                'missionaria': 'Missionária',
+                'diacono': 'Diácono',
+                'auxiliar': 'Auxiliar'
+            };
+
             let html = '';
             visitors.forEach(visitor => {
-                const roleLabels = {
-                    'visitante': 'Visitante',
-                    'cristao': 'Cristão',
-                    'pastor': 'Pastor',
-                    'presbitero': 'Presbítero',
-                    'missionaria': 'Missionária',
-                    'diacono': 'Diácono',
-                    'auxiliar': 'Auxiliar'
-                };
-
                 html += `
                     <div class="visitor-card">
                         <div class="visitor-name">
@@ -545,17 +592,30 @@
                 'avos': 'Avô/Avó',
                 'tios': 'Tio/Tia',
                 'amigo': 'Amigo(a)',
-                'namorado':'Namorado(a)'
+                'namorado': 'Namorado(a)'
             };
             return typeLabels[type] || type;
         }
 
-        function clearAllVisitors() {
+        async function clearAllVisitors() {
             if (confirm('Tem certeza que deseja limpar todos os registros de visitantes?')) {
-                visitors = [];
-                localStorage.removeItem('churchVisitors');
-                renderVisitorsList();
-                alert('Todos os registros foram removidos.');
+                try {
+                    const querySnapshot = await getDocs(collection(db, "visitors"));
+                    const deletePromises = [];
+                    
+                    querySnapshot.forEach((document) => {
+                        deletePromises.push(deleteDoc(doc(db, "visitors", document.id)));
+                    });
+                    
+                    await Promise.all(deletePromises);
+                    
+                    visitors = [];
+                    renderVisitorsList();
+                    alert('Todos os registros foram removidos.');
+                } catch (error) {
+                    console.error("Erro ao limpar registros:", error);
+                    alert('Erro ao limpar registros.');
+                }
             }
         }
 
