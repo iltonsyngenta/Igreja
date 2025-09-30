@@ -449,6 +449,54 @@
             z-index: 999;
             opacity: 0.7;
         }
+        /* DESTAQUE DOS CARDS AO VER OS VISITANTES*/
+        /* CARDS MAIORES PARA MELHOR LEGIBILIDADE */
+        /* CARDS com realce alternado mais sutil */
+.visitor-card {
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid #d4d1d0;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Padrão alternado sutil */
+.visitor-card:nth-child(odd) {
+    background: #edf2f7;
+    border-left: 3px solid #4a90e2;
+}
+
+.visitor-card:nth-child(even) {
+    background: #eff1ed;
+    border-left: 3px solid #28a745;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Efeito de destaque no hover */
+.visitor-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* Adiciona um sutil gradiente no fundo */
+.visitor-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent 0%, rgba(74, 144, 226, 0.3) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.visitor-card:hover::before {
+    opacity: 1;
+}
 
         /* Responsividade melhorada */
         @media (max-width: 768px) {
@@ -622,6 +670,116 @@
                 min-height: -webkit-fill-available;
             }
         }
+        /* ANIMAÇÕES DE CARREGAMENTO */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.loading-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loading-spinner {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    min-width: 200px;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #4a90e2;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Loading inline para lista de visitantes */
+.inline-loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+
+.inline-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #4a90e2;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+/* Animação de fade-in para os cards */
+.visitor-card {
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.visitor-card:nth-child(1) { animation-delay: 0.1s; }
+.visitor-card:nth-child(2) { animation-delay: 0.2s; }
+.visitor-card:nth-child(3) { animation-delay: 0.3s; }
+.visitor-card:nth-child(4) { animation-delay: 0.4s; }
+.visitor-card:nth-child(5) { animation-delay: 0.5s; }
+.visitor-card:nth-child(n+6) { animation-delay: 0.6s; }
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animação para botão de salvar */
+.save-btn.loading {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+}
+
+.save-btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
     </style>
 </head>
 
@@ -681,11 +839,12 @@
 
                 <div class="add-buttons">
                     <button type="button" class="add-btn" id="addConjugueBtn" onclick="addFamilyMember('conjugue')">+ Cônjuge</button>
-                    <button type="button" class="add-btn" onclick="addFamilyMember('filho')">+ Filho</button>
+                    <button type="button" class="add-btn" onclick="addFamilyMember('filho')">+ Filho(a)</button>
                     <button type="button" class="add-btn" onclick="addFamilyMember('pais')">+ Pais</button>
                     <button type="button" class="add-btn" onclick="addFamilyMember('avos')">+ Avós</button>
                     <button type="button" class="add-btn" onclick="addFamilyMember('tios')">+ Tios</button>
-                    <button type="button" class="add-btn" onclick="addFamilyMember('amigo')">+ Amigo</button>
+                    <button type="button" class="add-btn" onclick="addFamilyMember('amigo')">+ Amigo(a)</button>
+                    <button type="button" class="add-btn" onclick="addFamilyMember('namorado')">+ Namorado(a)</button>
                 </div>
 
                 <div id="familyContainer"></div>
@@ -728,8 +887,17 @@
             </div>
         </div>
     </div>
-   
+    <div class="footer">
+        v1.2
+    </div>
 
+    <!-- Loading Overlay -->
+<div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-spinner">
+        <div class="spinner"></div>
+        <div id="loadingText" class="loading-text">Carregando...</div>
+    </div>
+</div>
     <script type="module">
         // Firebase imports
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -755,15 +923,28 @@
         let isAuthenticated = false;
         const CONFIG_PASSWORD = "6161";
 
-        // Tornar funções globais
-        window.showScreen = showScreen;
-        window.addFamilyMember = addFamilyMember;
-        window.removeFamilyMember = removeFamilyMember;
-        window.updateFamilyMember = updateFamilyMember;
-        window.clearAllVisitors = clearAllVisitors;
-        window.checkPassword = checkPassword;
-        window.editVisitors = editVisitors;
-        window.changeFontSize = changeFontSize;
+        // Funções de loading
+        function showLoading(text = 'Carregando...') {
+            const overlay = document.getElementById('loadingOverlay');
+            const loadingText = document.getElementById('loadingText');
+            loadingText.textContent = text;
+            overlay.classList.add('show');
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.remove('show');
+        }
+
+        function showInlineLoading(containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = `
+                <div class="inline-loading">
+                    <div class="inline-spinner"></div>
+                    <div>Carregando visitantes...</div>
+                </div>
+            `;
+        }
 
         function showScreen(screen) {
             const container = document.getElementById('mainContainer');
@@ -883,7 +1064,8 @@
                         'pais': 'Pai/Mãe',
                         'avos': 'Avô/Avó',
                         'tios': 'Tio/Tia',
-                        'amigo': 'Amigo(a)'
+                        'amigo': 'Amigo(a)',
+                        'namorado': 'Namorado(a)'
                     };
                     
                     const typeLabel = typeLabels[type];
@@ -904,7 +1086,7 @@
                                         <option value="presbitero" ${member.role === 'presbitero' ? 'selected' : ''}>Presbítero</option>
                                         <option value="missionaria" ${member.role === 'missionaria' ? 'selected' : ''}>Missionária</option>
                                         <option value="diacono" ${member.role === 'diacono' ? 'selected' : ''}>Diácono</option>
-                                                                                <option value="auxiliar" ${member.role === 'auxiliar' ? 'selected' : ''}>Auxiliar</option>
+                                        <option value="auxiliar" ${member.role === 'auxiliar' ? 'selected' : ''}>Auxiliar</option>
                                     </select>
                                 </div>
                             </div>
@@ -938,6 +1120,7 @@
             alert('Funcionalidade de edição em desenvolvimento. Por enquanto, você pode excluir registros e cadastrar novamente.');
         }
 
+        // Função saveVisitor COM animação
         async function saveVisitor() {
             const mainName = document.getElementById('mainVisitor').value.trim();
             const mainRole = document.getElementById('mainRole').value;
@@ -956,7 +1139,15 @@
                 timestamp: new Date()
             };
 
+            // Mostrar loading
+            const saveBtn = document.querySelector('.save-btn');
+            saveBtn.classList.add('loading');
+            showLoading('Salvando visitante...');
+
             try {
+                // Simular um pequeno delay para mostrar a animação
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
                 await addDoc(collection(db, "visitors"), visitor);
                 
                 // Reset form
@@ -965,16 +1156,33 @@
                 renderFamilyMembers();
                 updateConjugueButton();
 
-                alert('Visitante cadastrado com sucesso!');
-                showScreen('home');
+                hideLoading();
+                saveBtn.classList.remove('loading');
+                
+                // Mostrar sucesso com animação
+                showLoading('✅ Visitante cadastrado com sucesso!');
+                setTimeout(() => {
+                    hideLoading();
+                    showScreen('home');
+                }, 1500);
+                
             } catch (error) {
                 console.error("Erro ao salvar visitante:", error);
+                hideLoading();
+                saveBtn.classList.remove('loading');
                 alert('Erro ao salvar visitante. Tente novamente.');
             }
         }
 
+        // Função loadVisitors COM animação
         async function loadVisitors() {
+            // Mostrar loading inline
+            showInlineLoading('visitorsList');
+            
             try {
+                // Simular um pequeno delay para mostrar a animação
+                await new Promise(resolve => setTimeout(resolve, 600));
+                
                 const querySnapshot = await getDocs(collection(db, "visitors"));
                 visitors = [];
                 querySnapshot.forEach((doc) => {
@@ -984,10 +1192,22 @@
                 // Ordenar por timestamp (mais recente primeiro)
                 visitors.sort((a, b) => new Date(b.timestamp?.toDate?.() || b.timestamp) - new Date(a.timestamp?.toDate?.() || a.timestamp));
                 
-                renderVisitorsList();
+                // Pequeno delay antes de mostrar os resultados para suavizar a transição
+                setTimeout(() => {
+                    renderVisitorsList();
+                }, 300);
+                
             } catch (error) {
                 console.error("Erro ao carregar visitantes:", error);
-                alert('Erro ao carregar visitantes.');
+                document.getElementById('visitorsList').innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #e74c3c;">
+                        <div style="font-size: 48px; margin-bottom: 15px;">⚠️</div>
+                        <div>Erro ao carregar visitantes.</div>
+                        <button onclick="loadVisitors()" style="margin-top: 15px; padding: 10px 20px; background: #4a90e2; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            🔄 Tentar novamente
+                        </button>
+                    </div>
+                `;
             }
         }
 
@@ -1052,14 +1272,17 @@
             return typeLabels[type] || type;
         }
 
+        // Função clearAllVisitors COM animação
+                // Função clearAllVisitors COM animação
         async function clearAllVisitors() {
-            // Verificar se está autenticado
             if (!isAuthenticated) {
                 alert('❌ Acesso negado! Você precisa estar autenticado para realizar esta ação.');
                 return;
             }
 
             if (confirm('⚠️ ATENÇÃO: Esta ação irá excluir TODOS os registros de visitantes permanentemente.\n\nTem certeza que deseja continuar?')) {
+                showLoading('Excluindo todos os registros...');
+                
                 try {
                     const querySnapshot = await getDocs(collection(db, "visitors"));
                     const deletePromises = [];
@@ -1072,13 +1295,32 @@
                     
                     visitors = [];
                     renderVisitorsList();
-                    alert('✅ Todos os registros foram removidos com sucesso.');
+                    
+                    hideLoading();
+                    showLoading('✅ Todos os registros foram removidos!');
+                    setTimeout(() => {
+                        hideLoading();
+                    }, 2000);
+                    
                 } catch (error) {
                     console.error("Erro ao limpar registros:", error);
+                    hideLoading();
                     alert('❌ Erro ao limpar registros. Tente novamente.');
                 }
             }
         }
+
+        // Tornar funções globais
+        window.showScreen = showScreen;
+        window.addFamilyMember = addFamilyMember;
+        window.removeFamilyMember = removeFamilyMember;
+        window.updateFamilyMember = updateFamilyMember;
+        window.clearAllVisitors = clearAllVisitors;
+        window.checkPassword = checkPassword;
+        window.editVisitors = editVisitors;
+        window.changeFontSize = changeFontSize;
+        window.saveVisitor = saveVisitor;
+        window.loadVisitors = loadVisitors;
 
         // Event Listeners
         document.getElementById('visitorForm').addEventListener('submit', function(e) {
@@ -1096,9 +1338,7 @@
         // Inicialização
         loadFontPreference();
         showScreen('home');
-    </script>
-    <div class="footer">
-        v1.1
-    </div>
+</script>
+    
 </body>
 </html>
